@@ -1,11 +1,15 @@
 import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
 import { memo } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import * as Yup from 'yup';
 import { SignupDto } from '../common';
+import { useCreateUserMutation } from '../hooks/useCreateUser';
+import { toast } from 'react-toastify';
 
 const Signup = () => {
   const initialUserForm = new SignupDto();
+  const [createUser, { loading, error }] = useCreateUserMutation();
+  const navigate = useNavigate();
 
   const userFormValidation = Yup.object({
     firstName: Yup.string().required('firstName is required'),
@@ -21,11 +25,19 @@ const Signup = () => {
       .required('Password is required'),
   });
 
-  const handleForm = (
+  const handleForm = async (
     values: typeof initialUserForm,
     { resetForm }: FormikHelpers<typeof initialUserForm>
   ) => {
     console.log('Form Submitted:', values);
+    const { data } = await createUser({
+      variables: { createUserInput: values },
+    });
+
+    toast.success('Signup successful!', { autoClose: 2000 });
+    console.log('User Created:', data?.createUser);
+    navigate('/login');
+
     resetForm();
   };
 
@@ -143,13 +155,19 @@ const Signup = () => {
                 className='text-red-500 text-sm'
               />
             </div>
+
             <button
               type='submit'
-              disabled={isSubmitting}
+              disabled={isSubmitting || loading}
               className='bg-blue-500 text-white px-4 py-2 rounded-md w-full cursor-pointer'
             >
-              {isSubmitting ? 'Submitting...' : 'Submit'}
+              {isSubmitting || loading ? 'Submitting...' : 'Submit'}
             </button>
+
+            {error && (
+              <div className='text-red-500 text-sm'>{error.message}</div>
+            )}
+
             <div className='w-full flex justify-center mt-10 underline cursor-pointer'>
               <Link to='/login' className=''>
                 Login

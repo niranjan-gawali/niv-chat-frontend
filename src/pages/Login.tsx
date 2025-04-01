@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router';
 import * as Yup from 'yup';
 import { LoginDto } from '../common';
 import { useLogin } from '../hooks';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const { login, error, setError } = useLogin();
@@ -27,6 +28,8 @@ const Login = () => {
     try {
       console.log(values);
       await login(values);
+      toast.success('Login successful!', { autoClose: 2000 });
+
       navigate('/');
       setError(null);
       resetForm();
