@@ -1,8 +1,4 @@
-// sections - index.ts
-
-// layout
-// elements
-// modal
-//
-
-// route
+export * from './sections';
+export * from './elements';
+export * from './layout';
+export * from './modal';

@@ -30,7 +30,7 @@ const Login = () => {
       await login(values);
       toast.success('Login successful!', { autoClose: 2000 });
 
-      navigate('/');
+      navigate('/home');
       setError(null);
       resetForm();
     } catch (err: unknown) {
