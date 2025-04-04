@@ -5,23 +5,26 @@ import { Chat } from '../common';
 const GET_CHATS_QUERY = graphql(`
   query findChats($pageNo: Int!) {
     findChats(chatInput: { pageNo: $pageNo }) {
-      _id
-      groupName
-      groupAdmin
-      lastMessage {
+      chats {
         _id
-        content
-        createdAt
-        updatedAt
+        groupName
+        groupAdmin
+        lastMessage {
+          _id
+          content
+          createdAt
+          updatedAt
+        }
+        users {
+          _id
+          firstName
+          lastName
+          username
+          isLoggedInUser
+        }
+        isGroupChat
       }
-      users {
-        _id
-        firstName
-        lastName
-        username
-        isLoggedInUser
-      }
-      isGroupChat
+      totalChatCount
     }
   }
 `);
@@ -31,9 +34,12 @@ const useGetChats = (pageNo: number = 1) => {
     variables: { pageNo },
   });
 
-  console.log('DATA : ', data);
-
-  return { chats: data?.findChats as Chat[], loading, error };
+  return {
+    chats: data?.findChats.chats as Chat[],
+    totalChatCount: data?.findChats.totalChatCount,
+    loading,
+    error,
+  };
 };
 
 export { useGetChats };

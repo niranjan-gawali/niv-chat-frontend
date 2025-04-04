@@ -5,5 +5,5 @@ export interface Message {
   content: string;
   createdAt: string;
   updatedAt: string;
-  senderUser: User;
+  senderUser: User | null;
 }

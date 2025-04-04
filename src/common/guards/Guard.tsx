@@ -7,7 +7,6 @@ export const Guard = ({ children }: { children: JSX.Element }) => {
 
   useEffect(() => {
     if (user) {
-      console.log('Setting authenticated to true...');
       authenticatedVar(true);
     }
   }, [user]);

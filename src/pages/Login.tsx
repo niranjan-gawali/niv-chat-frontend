@@ -26,7 +26,6 @@ const Login = () => {
     { resetForm }: FormikHelpers<typeof initialUserForm>
   ) => {
     try {
-      console.log(values);
       await login(values);
       toast.success('Login successful!', { autoClose: 2000 });
 

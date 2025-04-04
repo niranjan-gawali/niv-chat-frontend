@@ -4,40 +4,82 @@ import { useGetChats } from '../../hooks';
 import { useGetMessages } from '../../hooks/useGetMessages';
 import { Chat } from '../../common';
 import moment from 'moment';
+import { useCreateMessage } from '../../hooks/useCreateMessage';
+import InfiniteScroll from 'react-infinite-scroller';
 
 const MainLayout = () => {
   // Fetching the data
   const { chats } = useGetChats();
-  const { messages, getMessages } = useGetMessages();
-  console.log(chats);
+  const { getMessages, messages, totalMessageCount, hasMore, loading } =
+    useGetMessages();
+  const { createMessage } = useCreateMessage();
+
+  const [otherUserName, setOtherUserName] = useState<string>('');
 
   const [selectedChat, setSelectedChat] = useState<Chat>();
   const [inputText, setInputText] = useState('');
+
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [pageNo, setPageNo] = useState(1);
 
   // Auto-scroll to the latest message
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
+    console.log('NIRRR');
   }, [messages]);
+
+  // setting up first chat
+  useEffect(() => {
+    if (chats) {
+      handleFetchMessages(chats[0]._id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chats]);
 
   const handleSendMessage = (e: FormEvent) => {
     e.preventDefault();
     if (!selectedChat || inputText.trim() === '') return;
+    console.log(inputText);
+    createMessage(selectedChat._id, inputText);
+    setInputText('');
   };
 
   const handleFetchMessages = async (chatId: string) => {
-    console.log(chatId);
-    await getMessages(chatId);
-    const selectedChatData = chats.filter((c) => c._id === chatId);
+    setPageNo(1); // Reset page number
 
-    setSelectedChat(selectedChatData[0]);
+    // Fetch messages after resetting state
+    setTimeout(() => {
+      getMessages(chatId, 1);
+    }, 0);
+
+    // Update selected chat
+    const selectedChatData: Chat = chats.find((c) => c._id === chatId) || null;
+    setSelectedChat(selectedChatData);
+
+    if (selectedChatData && !selectedChatData.isGroupChat) {
+      const otherUser = selectedChatData.users.find(
+        (u) => !u.isLoggedInUser
+      )?.firstName;
+      setOtherUserName(otherUser ?? '');
+    }
+  };
+
+  const handleLoadMore = async () => {
+    console.log('handleLoadMore called...');
+    if (loading || !hasMore) return;
+
+    const nextPage = pageNo + 1;
+    if (messages.length < totalMessageCount) {
+      await getMessages(selectedChat?._id, nextPage);
+      setPageNo(nextPage);
+    }
   };
 
   return (
-    <div className='max-w-6xl w-full mx-auto flex h-full rounded-lg shadow-md overflow-hidden'>
+    <div className='max-w-7xl w-full mx-auto flex h-full rounded-lg shadow-md overflow-hidden'>
       {/* Sidebar (Hidden on Mobile) */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 p-4 transform shadow-xl ${
@@ -49,9 +91,7 @@ const MainLayout = () => {
         <ul className='space-y-2'>
           {chats &&
             chats.map((chat) => {
-              const name = chat.isGroupChat
-                ? chat.groupName
-                : chat.users?.find((u) => !u.isLoggedInUser)?.firstName;
+              const name = chat.isGroupChat ? chat.groupName : otherUserName;
 
               const profilePicture = chat.users?.find(
                 (u) => !u.isLoggedInUser
@@ -67,7 +107,7 @@ const MainLayout = () => {
                   key={chat._id}
                   className={`flex items-start p-2 rounded-md cursor-pointer transition-colors ${
                     selectedChat?._id === chat._id
-                      ? 'bg-gray-50 text-white'
+                      ? 'bg-gray-200 text-white'
                       : 'hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white'
                   }`}
                   onClick={() => {
@@ -121,111 +161,102 @@ const MainLayout = () => {
           </button>
           <h2 className='text-lg font-semibold dark:text-white'>
             {selectedChat
-              ? selectedChat.isGroupChat === false
+              ? selectedChat.isGroupChat
                 ? `Group: ${selectedChat.groupName}`
-                : `Chat with Niranjan`
+                : `Chat with ${otherUserName}`
               : 'Select a chat'}
           </h2>
         </div>
         {/* Messages List (Scrollable) */}
-        {/* <div className='flex-1 overflow-y-auto p-4 space-y-2'>
-          {messages?.length ? (
-            messages.map((msg) => (
-              <div
-                key={msg._id}
-                className={`p-2 rounded-lg max-w-[75%] ${
-                  msg.senderUser?.isLoggedInUser
-                    ? 'bg-blue-500 text-white self-end'
-                    : 'bg-gray-300 dark:bg-gray-700 dark:text-white'
-                }`}
-              >
-                {msg.content}
-              </div>
-            ))
-          ) : (
-            <p className='text-gray-500 dark:text-gray-400 text-center'>
-              No messages yet.
-            </p>
-          )}
-          <div ref={messagesEndRef} />
-        </div> */}
         <div className='flex-1 overflow-y-auto p-4 space-y-2'>
-          {messages?.length ? (
-            messages.map((msg) => {
-              const isLoggedIn = msg.senderUser?.isLoggedInUser;
-              const isGroupChat = selectedChat?.isGroupChat; // Assuming `chat` is passed as a prop
-              return (
-                <div
-                  key={msg._id}
-                  className={`flex items-end space-x-2 ${
-                    isLoggedIn ? 'justify-end' : 'justify-start'
-                  }`}
-                >
-                  {/* Show profile image & name only in group chats */}
-                  {!isLoggedIn && isGroupChat && (
-                    <div className='flex flex-col items-center'>
-                      <span className='text-xs text-gray-500 dark:text-gray-400'>
-                        {msg.senderUser?.firstName}
-                      </span>
-                      {msg.senderUser?.profilePicture ? (
-                        <img
-                          src={msg.senderUser.profilePicture}
-                          alt='User'
-                          className='w-8 h-8 rounded-full'
-                        />
-                      ) : (
-                        <div className='w-8 h-8 flex items-center justify-center bg-gray-500 text-white rounded-full'>
-                          {msg.senderUser?.firstName?.[0] || 'U'}
-                        </div>
-                      )}
-                    </div>
-                  )}
+          <InfiniteScroll
+            pageStart={0}
+            loadMore={handleLoadMore}
+            hasMore={hasMore}
+            useWindow={false} // Ensure it works in a scrollable div
+            threshold={100} // Start loading earlier
+          >
+            {messages?.length > 0 ? (
+              messages.map((msg) => {
+                const isLoggedIn = msg.senderUser?.isLoggedInUser ?? false;
+                const isGroupChat = selectedChat?.isGroupChat ?? false;
 
-                  {/* Message Bubble */}
+                return (
                   <div
-                    className={`p-2 rounded-lg max-w-[75%] flex flex-col ${
-                      isLoggedIn
-                        ? 'bg-blue-500 text-white self-end'
-                        : 'bg-gray-300 dark:bg-gray-700 dark:text-white'
+                    key={msg._id}
+                    className={`flex items-end space-x-2 ${
+                      isLoggedIn ? 'justify-end' : 'justify-start'
                     }`}
                   >
-                    {isGroupChat && !isLoggedIn && (
-                      <span className='text-xs font-semibold text-gray-800 dark:text-gray-300'>
-                        {msg.senderUser?.firstName}
-                      </span>
+                    {!isLoggedIn && isGroupChat && (
+                      <div className='flex flex-col items-center'>
+                        <span className='text-xs text-gray-500 dark:text-gray-400'>
+                          {msg.senderUser?.firstName || 'Unknown'}
+                        </span>
+                        {msg.senderUser?.profilePicture ? (
+                          <img
+                            src={msg.senderUser.profilePicture}
+                            alt='User'
+                            className='w-8 h-8 rounded-full'
+                          />
+                        ) : (
+                          <div className='w-8 h-8 flex items-center justify-center bg-gray-500 text-white rounded-full'>
+                            {msg.senderUser?.firstName?.[0] || 'U'}
+                          </div>
+                        )}
+                      </div>
                     )}
-                    <span>{msg.content}</span>
-                    <span className='text-xs text-gray-600 dark:text-gray-400 self-end'>
-                      {moment(msg.createdAt).format('hh:mm A')}
-                    </span>
+
+                    <div
+                      className={`p-2 rounded-lg max-w-[75%] flex flex-col ${
+                        isLoggedIn
+                          ? 'bg-blue-500 text-white self-end'
+                          : 'bg-gray-300 dark:bg-gray-700 dark:text-white'
+                      }`}
+                    >
+                      {isGroupChat && !isLoggedIn && (
+                        <span className='text-xs font-semibold text-gray-800 dark:text-gray-300'>
+                          {msg.senderUser?.firstName || 'Unknown'}
+                        </span>
+                      )}
+                      <span>{msg.content}</span>
+                      <span className='text-xs text-gray-600 dark:text-gray-400 self-end'>
+                        {moment(msg.createdAt).format('hh:mm A')}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              );
-            })
-          ) : (
-            <p className='text-gray-500 dark:text-gray-400 text-center'>
-              No messages yet.
-            </p>
-          )}
+                );
+              })
+            ) : (
+              <p className='text-gray-500 dark:text-gray-400 text-center'>
+                No messages yet.
+              </p>
+            )}
+          </InfiniteScroll>
+
           <div ref={messagesEndRef} />
         </div>
-        ;{/* Input Field (Fixed at Bottom) */}
+        {/* Input Field (Fixed at Bottom) */}
         {selectedChat && (
-          <div>
+          <div className='p-2 border-t dark:border-gray-700 bg-white dark:bg-gray-800'>
             <form
               onSubmit={handleSendMessage}
-              className='p-2 border-t dark:border-gray-700 flex bg-white dark:bg-gray-800'
+              className='flex items-center space-x-2'
             >
               <input
                 type='text'
                 placeholder='Type a message...'
-                className='flex-1 p-2 border rounded-md dark:bg-gray-700 dark:text-white'
+                className='flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600'
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
+                onKeyDown={(e) =>
+                  e.key === 'Enter' && !e.shiftKey && handleSendMessage(e)
+                }
               />
               <button
-                className='ml-2 px-4 py-2 bg-blue-500 text-white rounded-md'
+                className='px-4 py-2 bg-blue-500 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition hover:bg-blue-600'
                 type='submit'
+                disabled={!inputText.trim()} // Disable button if input is empty
               >
                 Send
               </button>

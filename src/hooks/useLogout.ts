@@ -8,7 +8,7 @@ const useLogout = () => {
 
   const logout = async () => {
     try {
-      const res = await axios.post(
+      await axios.post(
         `${API_URL}/auth/logout`,
         {},
         {
@@ -18,7 +18,6 @@ const useLogout = () => {
           withCredentials: true,
         }
       );
-      console.log(res);
 
       setError(null);
       await client.refetchQueries({ include: 'active' });
