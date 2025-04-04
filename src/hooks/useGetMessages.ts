@@ -17,6 +17,7 @@ const GET_MESSAGES_QUERY = graphql(`
         createdAt
         updatedAt
         profilePicture
+        isLoggedInUser
       }
     }
   }
