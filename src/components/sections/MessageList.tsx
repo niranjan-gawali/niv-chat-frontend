@@ -45,7 +45,12 @@ const MessageList = ({
     const nextPage = pageNo + 1;
     await getMessages(selectedChat._id, nextPage);
     setPageNo(nextPage);
+    console.log(pageNo);
   };
+
+  useEffect(() => {
+    console.log('MessageList :', messages);
+  }, []);
 
   return (
     <section className='flex-1 flex flex-col h-full bg-white dark:bg-gray-800 shadow-lg'>
@@ -107,7 +112,7 @@ const MessageList = ({
       </div>
 
       {/* Input Field */}
-      <InputMessageBox selectedChat={selectedChat} />
+      <InputMessageBox selectedChat={selectedChat} pageNo={pageNo} />
     </section>
   );
 };

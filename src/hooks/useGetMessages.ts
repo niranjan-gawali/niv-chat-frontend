@@ -3,7 +3,7 @@ import { useLazyQuery } from '@apollo/client';
 import { graphql } from '../gql';
 import { Message } from '../common';
 
-const GET_MESSAGES_QUERY = graphql(`
+export const GET_MESSAGES_QUERY = graphql(`
   query GetMessages($chatId: ID!, $pageNo: Int!) {
     getMessages(getMessageInput: { chatId: $chatId, pageNo: $pageNo }) {
       messages {

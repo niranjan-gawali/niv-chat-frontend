@@ -75,7 +75,22 @@ const splitLink = split(
 // ✅ Initialize Apollo Client with improved cache policy
 const client = new ApolloClient({
   link: ApolloLink.from([logoutLink, authLink, splitLink]),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          chats: {
+            keyArgs: false,
+            merge,
+          },
+          messages: {
+            keyArgs: ['chatId'],
+            merge,
+          },
+        },
+      },
+    },
+  }),
   defaultOptions: {
     watchQuery: {
       fetchPolicy: 'network-only', // ✅ Prevents stale data issues
@@ -85,5 +100,13 @@ const client = new ApolloClient({
     },
   },
 });
+
+function merge(existing: any, incoming: any, { args }: any) {
+  const merged = existing ? existing.slice(0) : [];
+  for (let i = 0; i < incoming.length; i++) {
+    merged[args.skip + i] = incoming[i];
+  }
+  return merged;
+}
 
 export default client;

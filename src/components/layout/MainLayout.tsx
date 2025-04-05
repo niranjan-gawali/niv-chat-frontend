@@ -54,6 +54,10 @@ const MainLayout = () => {
     }
   };
 
+  useEffect(() => {
+    console.log('MainLayout', messages);
+  }, []);
+
   return (
     <div className='max-w-7xl w-full mx-auto flex h-full rounded-lg shadow-md overflow-hidden'>
       {/* Sidebar (Hidden on Mobile) */}
