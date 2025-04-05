@@ -37,7 +37,7 @@ const Header = () => {
 
   return (
     <header className='sticky top-0 w-full bg-white dark:bg-gray-900 shadow-md z-50'>
-      <div className='max-w-6xl mx-auto px-6 py-4 flex justify-between items-center'>
+      <div className='max-w-7xl mx-auto px-6 py-4 flex justify-between items-center'>
         {/* Logo */}
         <h1 className='text-xl font-bold dark:text-white'>NivChat</h1>
 
