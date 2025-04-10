@@ -7,61 +7,58 @@ import ChatList from '../sections/Chatlist';
 import { MessageList } from '../sections';
 
 const MainLayout = () => {
-  // Fetching the data
   const { chats } = useGetChats();
-  const { getMessages, messages, hasMore, loading } = useGetMessages();
 
-  const [otherUserName, setOtherUserName] = useState<string>('');
   const [selectedChat, setSelectedChat] = useState<Chat>();
-
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
-
+  const [otherUserName, setOtherUserName] = useState<string>('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [pageNo, setPageNo] = useState(1);
 
-  // Auto-scroll to the latest message
+  const selectedChatId = selectedChat?._id ?? '';
+  const { messages, hasMore, loading } = useGetMessages(selectedChatId, pageNo);
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  // Scroll to bottom when messages change
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
-  // setting up first chat
+  // Automatically select the first chat
   useEffect(() => {
-    if (chats) {
-      handleFetchMessages(chats[0]._id);
+    if (chats && chats.length > 0) {
+      const firstChat = chats[0];
+      setSelectedChat(firstChat);
+      setPageNo(1);
+
+      if (!firstChat.isGroupChat) {
+        const otherUser = firstChat.users.find(
+          (u) => !u.isLoggedInUser
+        )?.firstName;
+        setOtherUserName(otherUser ?? '');
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chats]);
 
-  const handleFetchMessages = async (chatId: string) => {
-    setPageNo(1); // Reset page number
+  const handleFetchMessages = (chatId: string) => {
+    const selected = chats.find((c) => c._id === chatId);
+    if (!selected) return;
 
-    // Fetch messages after resetting state
-    setTimeout(() => {
-      getMessages(chatId, 1);
-    }, 0);
+    setSelectedChat(selected);
+    setPageNo(1); // Reset pagination
 
-    // Update selected chat
-    const selectedChatData: Chat = chats.find((c) => c._id === chatId) as Chat;
-    setSelectedChat(selectedChatData);
-
-    if (selectedChatData && !selectedChatData.isGroupChat) {
-      const otherUser = selectedChatData.users.find(
+    if (!selected.isGroupChat) {
+      const otherUser = selected.users.find(
         (u) => !u.isLoggedInUser
       )?.firstName;
       setOtherUserName(otherUser ?? '');
     }
   };
 
-  useEffect(() => {
-    console.log('MainLayout', messages);
-  }, []);
-
   return (
     <div className='max-w-7xl w-full mx-auto flex h-full rounded-lg shadow-md overflow-hidden'>
-      {/* Sidebar (Hidden on Mobile) */}
-
       <ChatList
         chats={chats}
         selectedChat={selectedChat}
@@ -70,13 +67,12 @@ const MainLayout = () => {
         setSidebarOpen={setSidebarOpen}
       />
 
-      {/* Messages List (Scrollable) */}
       <MessageList
         selectedChat={selectedChat}
         messages={messages}
         hasMore={hasMore}
         loading={loading}
-        getMessages={getMessages}
+        getMessages={() => {}} // Not needed anymore — just pass empty function or remove this prop
         pageNo={pageNo}
         setPageNo={setPageNo}
         otherUserName={otherUserName}

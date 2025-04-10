@@ -1,19 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApolloCache } from '@apollo/client';
 import { GET_MESSAGES_QUERY } from '../hooks';
-import { CreateMessageInput, GetMessageOutput } from '../gql/graphql';
+import { CreateMessageOutput, GetMessageOutput } from '../gql/graphql';
 
 export const updateMessages = (
   cache: ApolloCache<any>,
   chatId: string,
-  message: CreateMessageInput
-  //   pageNo: number
+  message: CreateMessageOutput
 ) => {
   const messagesQueryOptions = {
     query: GET_MESSAGES_QUERY,
     variables: {
       chatId,
-      pageNo: 9,
+      pageNo: 1,
     },
   };
 
@@ -23,8 +22,6 @@ export const updateMessages = (
 
   if (existing && existing.getMessages?.messages) {
     const existingMessages = existing.getMessages.messages;
-
-    console.log(existingMessages);
 
     const senderUser = existingMessages.find(
       (msg) => msg.senderUser?.isLoggedInUser
@@ -42,8 +39,6 @@ export const updateMessages = (
       ...existing.getMessages,
       messages: [...existingMessages, newMessage],
     };
-
-    console.log(updatedMessages);
 
     cache.writeQuery({
       ...messagesQueryOptions,

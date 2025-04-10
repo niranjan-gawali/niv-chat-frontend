@@ -4,10 +4,9 @@ import { Chat } from '../../common';
 
 interface InputMessageBoxProps {
   selectedChat?: Chat;
-  pageNo: number;
 }
 
-const InputMessageBox = ({ selectedChat, pageNo }: InputMessageBoxProps) => {
+const InputMessageBox = ({ selectedChat }: InputMessageBoxProps) => {
   const [inputText, setInputText] = useState('');
   const { createMessage } = useCreateMessage();
 
@@ -15,7 +14,7 @@ const InputMessageBox = ({ selectedChat, pageNo }: InputMessageBoxProps) => {
     e.preventDefault();
     if (!selectedChat || inputText.trim() === '') return;
     console.log(inputText);
-    createMessage(selectedChat._id, inputText, pageNo);
+    createMessage(selectedChat._id, inputText);
     setInputText('');
   };
 

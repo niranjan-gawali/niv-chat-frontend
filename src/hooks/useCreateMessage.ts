@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { graphql } from '../gql';
-import { updateMessages } from '../cache';
+import { updateChats, updateMessages } from '../cache';
 
 const CREATE_MESSAGE = graphql(`
   mutation CreateMessage($chatId: ID!, $content: String!) {
@@ -16,11 +16,7 @@ const useCreateMessage = () => {
   const [createMessageMutation, { data, loading, error }] =
     useMutation(CREATE_MESSAGE);
 
-  const createMessage = async (
-    chatId: string,
-    content: string,
-    pageNo: number
-  ) => {
+  const createMessage = async (chatId: string, content: string) => {
     try {
       await createMessageMutation({
         variables: { chatId, content },
@@ -28,7 +24,8 @@ const useCreateMessage = () => {
           console.log('1. ', data);
 
           if (data?.createMessage) {
-            updateMessages(cache, chatId, data.createMessage, pageNo);
+            updateMessages(cache, chatId, data.createMessage);
+            updateChats(cache, chatId, data.createMessage);
           }
         },
       });

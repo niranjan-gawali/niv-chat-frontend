@@ -19,6 +19,7 @@ type Documents = {
     "\n  query findChats($pageNo: Int!) {\n    findChats(chatInput: { pageNo: $pageNo }) {\n      chats {\n        _id\n        groupName\n        groupAdmin\n        lastMessage {\n          _id\n          content\n          createdAt\n          updatedAt\n        }\n        users {\n          _id\n          firstName\n          lastName\n          username\n          isLoggedInUser\n        }\n        isGroupChat\n      }\n      totalChatCount\n    }\n  }\n": typeof types.FindChatsDocument,
     "\n  query GetMessages($chatId: ID!, $pageNo: Int!) {\n    getMessages(getMessageInput: { chatId: $chatId, pageNo: $pageNo }) {\n      messages {\n        _id\n        content\n        createdAt\n        updatedAt\n        senderUser {\n          _id\n          firstName\n          lastName\n          email\n          username\n          createdAt\n          updatedAt\n          profilePicture\n          isLoggedInUser\n        }\n      }\n      totalMessageCount\n    }\n  }\n": typeof types.GetMessagesDocument,
     "\n  query GetMyInformation {\n    getMyInformation {\n      _id\n      email\n      username\n    }\n  }\n": typeof types.GetMyInformationDocument,
+    "\n  query FindChat($chatId: ID!) {\n    findChat(id: $chatId) {\n      _id\n      isGroupChat\n      groupName\n      groupAdmin\n      lastMessage {\n        _id\n        content\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": typeof types.FindChatDocument,
 };
 const documents: Documents = {
     "\n  mutation CreateMessage($chatId: ID!, $content: String!) {\n    createMessage(createMessageInput: { chatId: $chatId, content: $content }) {\n      _id\n      content\n      createdAt\n      updatedAt\n    }\n  }\n": types.CreateMessageDocument,
@@ -26,6 +27,7 @@ const documents: Documents = {
     "\n  query findChats($pageNo: Int!) {\n    findChats(chatInput: { pageNo: $pageNo }) {\n      chats {\n        _id\n        groupName\n        groupAdmin\n        lastMessage {\n          _id\n          content\n          createdAt\n          updatedAt\n        }\n        users {\n          _id\n          firstName\n          lastName\n          username\n          isLoggedInUser\n        }\n        isGroupChat\n      }\n      totalChatCount\n    }\n  }\n": types.FindChatsDocument,
     "\n  query GetMessages($chatId: ID!, $pageNo: Int!) {\n    getMessages(getMessageInput: { chatId: $chatId, pageNo: $pageNo }) {\n      messages {\n        _id\n        content\n        createdAt\n        updatedAt\n        senderUser {\n          _id\n          firstName\n          lastName\n          email\n          username\n          createdAt\n          updatedAt\n          profilePicture\n          isLoggedInUser\n        }\n      }\n      totalMessageCount\n    }\n  }\n": types.GetMessagesDocument,
     "\n  query GetMyInformation {\n    getMyInformation {\n      _id\n      email\n      username\n    }\n  }\n": types.GetMyInformationDocument,
+    "\n  query FindChat($chatId: ID!) {\n    findChat(id: $chatId) {\n      _id\n      isGroupChat\n      groupName\n      groupAdmin\n      lastMessage {\n        _id\n        content\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": types.FindChatDocument,
 };
 
 /**
@@ -62,6 +64,10 @@ export function graphql(source: "\n  query GetMessages($chatId: ID!, $pageNo: In
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query GetMyInformation {\n    getMyInformation {\n      _id\n      email\n      username\n    }\n  }\n"): (typeof documents)["\n  query GetMyInformation {\n    getMyInformation {\n      _id\n      email\n      username\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query FindChat($chatId: ID!) {\n    findChat(id: $chatId) {\n      _id\n      isGroupChat\n      groupName\n      groupAdmin\n      lastMessage {\n        _id\n        content\n        createdAt\n        updatedAt\n      }\n    }\n  }\n"): (typeof documents)["\n  query FindChat($chatId: ID!) {\n    findChat(id: $chatId) {\n      _id\n      isGroupChat\n      groupName\n      groupAdmin\n      lastMessage {\n        _id\n        content\n        createdAt\n        updatedAt\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

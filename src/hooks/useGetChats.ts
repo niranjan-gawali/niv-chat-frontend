@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { graphql } from '../gql';
 import { Chat } from '../common';
 
-const GET_CHATS_QUERY = graphql(`
+export const GET_CHATS_QUERY = graphql(`
   query findChats($pageNo: Int!) {
     findChats(chatInput: { pageNo: $pageNo }) {
       chats {

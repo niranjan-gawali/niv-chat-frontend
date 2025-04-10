@@ -48,10 +48,6 @@ const MessageList = ({
     console.log(pageNo);
   };
 
-  useEffect(() => {
-    console.log('MessageList :', messages);
-  }, []);
-
   return (
     <section className='flex-1 flex flex-col h-full bg-white dark:bg-gray-800 shadow-lg'>
       {/* Header (With Menu Button for Mobile) */}
@@ -112,7 +108,7 @@ const MessageList = ({
       </div>
 
       {/* Input Field */}
-      <InputMessageBox selectedChat={selectedChat} pageNo={pageNo} />
+      <InputMessageBox selectedChat={selectedChat} />
     </section>
   );
 };
