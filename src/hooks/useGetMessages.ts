@@ -1,62 +1,85 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { graphql } from '../gql';
 import { Message } from '../common';
 
 export const GET_MESSAGES_QUERY = graphql(`
-  query GetMessages($chatId: ID!, $pageNo: Int!) {
-    getMessages(getMessageInput: { chatId: $chatId, pageNo: $pageNo }) {
-      messages {
+  query GetMessages($chatId: ID!, $cursor: String) {
+    getMessages(getMessageInput: { chatId: $chatId, cursor: $cursor }) {
+      _id
+      content
+      createdAt
+      updatedAt
+      senderUser {
         _id
-        content
+        firstName
+        lastName
+        email
+        username
         createdAt
         updatedAt
-        senderUser {
-          _id
-          firstName
-          lastName
-          email
-          username
-          createdAt
-          updatedAt
-          profilePicture
-          isLoggedInUser
-        }
+        profilePicture
+        isLoggedInUser
       }
-      totalMessageCount
     }
   }
 `);
 
-const useGetMessages = (chatId: string, pageNo: number) => {
+const useGetMessages = (chatId: string, cursor?: string) => {
   const [allMessages, setAllMessages] = useState<Message[]>([]);
-  const [totalMessageCount, setTotalMessageCount] = useState<number>(0);
 
-  const { data, loading, error } = useQuery(GET_MESSAGES_QUERY, {
-    variables: { chatId, pageNo },
+  const { data, loading, error, fetchMore } = useQuery(GET_MESSAGES_QUERY, {
+    variables: { chatId, cursor },
     fetchPolicy: 'network-only',
-    skip: chatId.length === 0,
+    skip: !chatId,
   });
 
+  // Reset when chatId changes
   useEffect(() => {
-    if (data?.getMessages) {
-      const newMessages = data.getMessages.messages.filter(
-        (msg) => !allMessages.some((prev) => prev._id === msg._id)
-      );
-      setAllMessages((prev) => [...prev, ...newMessages]);
-      setTotalMessageCount(data.getMessages.totalMessageCount);
+    setAllMessages([]);
+  }, [chatId]);
+
+  // Add initial messages from query
+  useEffect(() => {
+    if (data?.getMessages?.length) {
+      setAllMessages((prev) => {
+        const unique = data.getMessages.filter(
+          (msg) => !prev.some((m) => m._id === msg._id)
+        );
+        return [...unique, ...prev]; // prepend (assuming latest comes first)
+      });
     }
   }, [data]);
 
-  const hasMore = useMemo(() => {
-    return allMessages.length < totalMessageCount;
-  }, [allMessages.length, totalMessageCount]);
+  const fetchOlderMessages = async () => {
+    if (allMessages.length === 0) return;
+
+    const lastMsg = allMessages[allMessages.length - 1]; // oldest message
+    const newCursor = lastMsg._id;
+
+    try {
+      const { data: fetchedData } = await fetchMore({
+        variables: { chatId, cursor: newCursor },
+      });
+
+      const olderMessages = fetchedData?.getMessages ?? [];
+
+      setAllMessages((prev) => {
+        const unique = olderMessages.filter(
+          (msg) => !prev.some((m) => m._id === msg._id)
+        );
+        return [...prev, ...unique]; // append older messages
+      });
+    } catch (err) {
+      console.error('Error while fetching older messages:', err);
+    }
+  };
 
   return {
     messages: allMessages,
-    hasMore,
     loading,
     error,
+    fetchOlderMessages,
   };
 };
 

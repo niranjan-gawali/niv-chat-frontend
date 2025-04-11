@@ -12,10 +12,10 @@ const MainLayout = () => {
   const [selectedChat, setSelectedChat] = useState<Chat>();
   const [otherUserName, setOtherUserName] = useState<string>('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [pageNo, setPageNo] = useState(1);
 
   const selectedChatId = selectedChat?._id ?? '';
-  const { messages, hasMore, loading } = useGetMessages(selectedChatId, pageNo);
+  const { messages, loading, fetchOlderMessages } =
+    useGetMessages(selectedChatId);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -31,7 +31,6 @@ const MainLayout = () => {
     if (chats && chats.length > 0) {
       const firstChat = chats[0];
       setSelectedChat(firstChat);
-      setPageNo(1);
 
       if (!firstChat.isGroupChat) {
         const otherUser = firstChat.users.find(
@@ -47,7 +46,6 @@ const MainLayout = () => {
     if (!selected) return;
 
     setSelectedChat(selected);
-    setPageNo(1); // Reset pagination
 
     if (!selected.isGroupChat) {
       const otherUser = selected.users.find(
@@ -70,11 +68,8 @@ const MainLayout = () => {
       <MessageList
         selectedChat={selectedChat}
         messages={messages}
-        hasMore={hasMore}
         loading={loading}
-        getMessages={() => {}} // Not needed anymore — just pass empty function or remove this prop
-        pageNo={pageNo}
-        setPageNo={setPageNo}
+        fetchOlderMessages={fetchOlderMessages}
         otherUserName={otherUserName}
         setSidebarOpen={setSidebarOpen}
         sidebarOpen={sidebarOpen}

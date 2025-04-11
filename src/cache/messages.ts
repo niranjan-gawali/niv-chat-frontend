@@ -12,7 +12,6 @@ export const updateMessages = (
     query: GET_MESSAGES_QUERY,
     variables: {
       chatId,
-      pageNo: 1,
     },
   };
 
@@ -20,8 +19,8 @@ export const updateMessages = (
     messagesQueryOptions
   );
 
-  if (existing && existing.getMessages?.messages) {
-    const existingMessages = existing.getMessages.messages;
+  if (existing && existing.getMessages) {
+    const existingMessages = existing.getMessages;
 
     const senderUser = existingMessages.find(
       (msg) => msg.senderUser?.isLoggedInUser
@@ -32,13 +31,17 @@ export const updateMessages = (
       senderUser: senderUser
         ? { ...senderUser, __typename: 'UserOutput' }
         : undefined,
-      __typename: 'GetMessageOutputData',
+      __typename: 'GetMessageOutput',
     };
 
-    const updatedMessages = {
-      ...existing.getMessages,
-      messages: [...existingMessages, newMessage],
-    };
+    // const updatedMessages = [...existingMessages, newMessage];
+    // const updatedMessages = [newMessage, ...existingMessages];
+    const updatedMessages = [newMessage, ...existingMessages].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+
+    console.log('before sort:  ', updatedMessages);
 
     cache.writeQuery({
       ...messagesQueryOptions,

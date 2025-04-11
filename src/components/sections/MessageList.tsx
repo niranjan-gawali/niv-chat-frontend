@@ -1,5 +1,5 @@
-import InfiniteScroll from 'react-infinite-scroller';
-import { useRef, useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useRef, useEffect, useCallback, useState } from 'react';
 import { Chat, Message } from '../../common';
 import { Menu } from 'lucide-react';
 import InputMessageBox from './InputMessageBox';
@@ -9,11 +9,8 @@ import MessageField from '../elements/MessageField';
 interface MessageListProps {
   selectedChat?: Chat;
   messages: Message[];
-  hasMore: boolean;
   loading: boolean;
-  getMessages: (chatId: string, page: number) => void;
-  pageNo: number;
-  setPageNo: (page: number) => void;
+  fetchOlderMessages: () => void;
   otherUserName: string;
   setSidebarOpen: (open: boolean) => void;
   sidebarOpen: boolean;
@@ -22,35 +19,55 @@ interface MessageListProps {
 const MessageList = ({
   selectedChat,
   messages,
-  hasMore,
   loading,
-  getMessages,
-  pageNo,
-  setPageNo,
+  fetchOlderMessages,
   otherUserName,
   setSidebarOpen,
   sidebarOpen,
 }: MessageListProps) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [initialScrollDone, setInitialScrollDone] = useState(false);
+  const [prevHeight, setPrevHeight] = useState<number | null>(null);
 
+  // Scroll to bottom on initial load
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      messagesEndRef.current.scrollIntoView({
+        behavior: initialScrollDone ? 'smooth' : 'auto',
+      });
+    }
+    setInitialScrollDone(true);
+  }, [messages]);
+
+  // Maintain scroll position when older messages are loaded
+  useEffect(() => {
+    console.log('MESSAGE IS UPDATED...', [...messages]);
+
+    if (prevHeight !== null && containerRef.current) {
+      containerRef.current.scrollTop =
+        containerRef.current.scrollHeight - prevHeight;
+      setPrevHeight(null);
     }
   }, [messages]);
 
-  const handleLoadMore = async () => {
-    if (loading || !hasMore || !selectedChat) return;
+  const handleScroll = useCallback(() => {
+    const container = containerRef.current;
+    if (!container || loading || !selectedChat) return;
 
-    const nextPage = pageNo + 1;
-    await getMessages(selectedChat._id, nextPage);
-    setPageNo(nextPage);
-    console.log(pageNo);
-  };
+    if (container.scrollTop === 0) {
+      const oldestMessage = messages[messages.length - 1];
+      if (oldestMessage && oldestMessage._id) {
+        setPrevHeight(container.scrollHeight);
+        console.log('LOADIN OLD DATA');
+        fetchOlderMessages();
+      }
+    }
+  }, [messages, loading, selectedChat, fetchOlderMessages]);
 
   return (
     <section className='flex-1 flex flex-col h-full bg-white dark:bg-gray-800 shadow-lg'>
-      {/* Header (With Menu Button for Mobile) */}
+      {/* Header */}
       <div className='p-3 flex justify-between items-center border-b dark:border-gray-700'>
         <button
           className='md:hidden text-gray-700 dark:text-white'
@@ -66,16 +83,16 @@ const MessageList = ({
             : 'Select a chat'}
         </h2>
       </div>
-      <div className='flex-1 overflow-y-auto p-4 space-y-2'>
-        <InfiniteScroll
-          pageStart={0}
-          loadMore={handleLoadMore}
-          hasMore={hasMore}
-          useWindow={false}
-          threshold={100}
-        >
-          {messages?.length > 0 ? (
-            messages.map((msg) => {
+
+      {/* Messages */}
+      <div
+        ref={containerRef}
+        onScroll={handleScroll}
+        className='flex-1 overflow-y-auto p-4 space-y-2'
+      >
+        {messages?.length > 0 ? (
+          [...messages]
+            .map((msg) => {
               const isLoggedIn = msg.senderUser?.isLoggedInUser ?? false;
               const isGroupChat = selectedChat?.isGroupChat ?? false;
 
@@ -98,12 +115,12 @@ const MessageList = ({
                 </div>
               );
             })
-          ) : (
-            <p className='text-gray-500 dark:text-gray-400 text-center'>
-              No messages yet.
-            </p>
-          )}
-        </InfiniteScroll>
+            .reverse()
+        ) : (
+          <p className='text-gray-500 dark:text-gray-400 text-center'>
+            No messages yet.
+          </p>
+        )}
         <div ref={messagesEndRef} />
       </div>
 
