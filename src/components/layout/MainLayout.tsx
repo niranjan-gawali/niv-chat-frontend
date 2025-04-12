@@ -7,7 +7,7 @@ import ChatList from '../sections/Chatlist';
 import { MessageList } from '../sections';
 
 const MainLayout = () => {
-  const { chats } = useGetChats();
+  const { chats, fetchOlderChats } = useGetChats();
 
   const [selectedChat, setSelectedChat] = useState<Chat>();
   const [otherUserName, setOtherUserName] = useState<string>('');
@@ -63,6 +63,7 @@ const MainLayout = () => {
         handleFetchMessages={handleFetchMessages}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
+        fetchOlderChats={fetchOlderChats}
       />
 
       <MessageList

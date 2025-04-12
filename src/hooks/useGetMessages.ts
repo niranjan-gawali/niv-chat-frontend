@@ -46,7 +46,7 @@ const useGetMessages = (chatId: string, cursor?: string) => {
         const unique = data.getMessages.filter(
           (msg) => !prev.some((m) => m._id === msg._id)
         );
-        return [...unique, ...prev]; // prepend (assuming latest comes first)
+        return [...unique, ...prev];
       });
     }
   }, [data]);
@@ -54,7 +54,7 @@ const useGetMessages = (chatId: string, cursor?: string) => {
   const fetchOlderMessages = async () => {
     if (allMessages.length === 0) return;
 
-    const lastMsg = allMessages[allMessages.length - 1]; // oldest message
+    const lastMsg = allMessages[allMessages.length - 1];
     const newCursor = lastMsg._id;
 
     try {
@@ -68,7 +68,7 @@ const useGetMessages = (chatId: string, cursor?: string) => {
         const unique = olderMessages.filter(
           (msg) => !prev.some((m) => m._id === msg._id)
         );
-        return [...prev, ...unique]; // append older messages
+        return [...prev, ...unique];
       });
     } catch (err) {
       console.error('Error while fetching older messages:', err);
