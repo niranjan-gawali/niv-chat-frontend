@@ -13,7 +13,7 @@ const InputMessageBox = ({ selectedChat }: InputMessageBoxProps) => {
   const handleSendMessage = (e: FormEvent) => {
     e.preventDefault();
     if (!selectedChat || inputText.trim() === '') return;
-    console.log(inputText);
+    // console.log(inputText);
     createMessage(selectedChat._id, inputText);
     setInputText('');
   };

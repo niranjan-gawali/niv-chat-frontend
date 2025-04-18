@@ -28,12 +28,12 @@ const MainLayout = () => {
 
   // Automatically select the first chat
   useEffect(() => {
-    if (chats && chats.length > 0) {
+    if (chats && chats.length > 0 && !selectedChat) {
       const firstChat = chats[0];
-      setSelectedChat(firstChat);
+      setSelectedChat(firstChat as Chat);
 
       if (!firstChat.isGroupChat) {
-        const otherUser = firstChat.users.find(
+        const otherUser = (firstChat as Chat).users.find(
           (u) => !u.isLoggedInUser
         )?.firstName;
         setOtherUserName(otherUser ?? '');
@@ -45,10 +45,10 @@ const MainLayout = () => {
     const selected = chats.find((c) => c._id === chatId);
     if (!selected) return;
 
-    setSelectedChat(selected);
+    setSelectedChat(selected as Chat);
 
     if (!selected.isGroupChat) {
-      const otherUser = selected.users.find(
+      const otherUser = (selected as Chat).users.find(
         (u) => !u.isLoggedInUser
       )?.firstName;
       setOtherUserName(otherUser ?? '');
@@ -58,7 +58,7 @@ const MainLayout = () => {
   return (
     <div className='max-w-7xl w-full mx-auto flex h-full rounded-lg shadow-md overflow-hidden'>
       <ChatList
-        chats={chats}
+        chats={chats as Chat[]}
         selectedChat={selectedChat}
         handleFetchMessages={handleFetchMessages}
         sidebarOpen={sidebarOpen}

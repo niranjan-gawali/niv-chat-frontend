@@ -41,8 +41,6 @@ export const updateMessages = (
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
-    console.log('before sort:  ', updatedMessages);
-
     cache.writeQuery({
       ...messagesQueryOptions,
       data: {

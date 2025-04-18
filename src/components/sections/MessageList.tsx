@@ -42,7 +42,7 @@ const MessageList = ({
 
   // Maintain scroll position when older messages are loaded
   useEffect(() => {
-    console.log('MESSAGE IS UPDATED...', [...messages]);
+    // console.log('MESSAGE IS UPDATED...', [...messages]);
 
     if (prevHeight !== null && containerRef.current) {
       containerRef.current.scrollTop =
@@ -59,7 +59,7 @@ const MessageList = ({
       const oldestMessage = messages[messages.length - 1];
       if (oldestMessage && oldestMessage._id) {
         setPrevHeight(container.scrollHeight);
-        console.log('LOADIN OLD DATA');
+        // console.log('LOADIN OLD DATA');
         fetchOlderMessages();
       }
     }

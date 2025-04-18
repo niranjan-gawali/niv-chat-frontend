@@ -15,7 +15,7 @@ const useLogin = () => {
         },
         withCredentials: true,
       });
-      console.log(res);
+      // console.log(res);
 
       setError(null);
       await client.refetchQueries({ include: 'active' });

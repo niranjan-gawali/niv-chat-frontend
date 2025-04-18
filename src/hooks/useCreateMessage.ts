@@ -21,7 +21,7 @@ const useCreateMessage = () => {
       await createMessageMutation({
         variables: { chatId, content },
         update(cache, { data }) {
-          console.log('1. ', data);
+          // console.log('1. ', data);
 
           if (data?.createMessage) {
             updateMessages(cache, chatId, data.createMessage);

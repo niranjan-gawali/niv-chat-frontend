@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { graphql } from '../gql';
@@ -42,9 +43,9 @@ const useGetMessages = (chatId: string, cursor?: string) => {
   // Add initial messages from query
   useEffect(() => {
     if (data?.getMessages?.length) {
-      setAllMessages((prev) => {
+      setAllMessages((prev: any) => {
         const unique = data.getMessages.filter(
-          (msg) => !prev.some((m) => m._id === msg._id)
+          (msg) => !prev.some((m: Message) => m._id === msg._id)
         );
         return [...unique, ...prev];
       });
@@ -64,9 +65,9 @@ const useGetMessages = (chatId: string, cursor?: string) => {
 
       const olderMessages = fetchedData?.getMessages ?? [];
 
-      setAllMessages((prev) => {
+      setAllMessages((prev: any) => {
         const unique = olderMessages.filter(
-          (msg) => !prev.some((m) => m._id === msg._id)
+          (msg) => !prev.some((m: Message) => m._id === msg._id)
         );
         return [...prev, ...unique];
       });

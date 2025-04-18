@@ -29,13 +29,13 @@ const Signup = () => {
     values: typeof initialUserForm,
     { resetForm }: FormikHelpers<typeof initialUserForm>
   ) => {
-    console.log('Form Submitted:', values);
+    // console.log('Form Submitted:', values);
     const { data } = await createUser({
       variables: { createUserInput: values },
     });
 
     toast.success('Signup successful!', { autoClose: 2000 });
-    console.log('User Created:', data?.createUser);
+    // console.log('User Created:', data?.createUser);
     navigate('/login');
 
     resetForm();

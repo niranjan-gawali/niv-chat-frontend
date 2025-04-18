@@ -11,32 +11,34 @@ export const updateChats = (
   const chatQueryOptions = {
     query: GET_CHATS_QUERY,
     variables: {
-      pageNo: 1,
+      cursor: null,
     },
   };
 
-  const existing = cache.readQuery<{ findChats: ChatOutput }>(chatQueryOptions);
+  const existing = cache.readQuery<{
+    findChats: ChatOutput[];
+  }>(chatQueryOptions);
 
-  if (!existing) return;
+  if (existing && existing.findChats) {
+    if (!existing) return;
 
-  const updatedChats = existing.findChats.chats.map((chat) => {
-    if (chat._id == id) {
-      return {
-        ...chat,
-        lastMessage: message,
-      };
-    }
+    const updatedChats = existing.findChats.map((chat) => {
+      if (chat._id === id) {
+        return {
+          ...chat,
+          lastMessage: message,
+        };
+      }
+      return chat;
+    });
 
-    return chat;
-  });
-
-  cache.writeQuery({
-    ...chatQueryOptions,
-    data: {
-      findChats: {
-        ...existing.findChats,
-        chats: updatedChats,
+    cache.writeQuery({
+      ...chatQueryOptions,
+      data: {
+        findChats: [...updatedChats],
       },
-    },
-  });
+    });
+  } else {
+    console.warn('No existing messages in cache. Skipping cache update.');
+  }
 };
