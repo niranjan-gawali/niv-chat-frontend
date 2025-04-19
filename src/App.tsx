@@ -5,15 +5,19 @@ import { ApolloProvider } from '@apollo/client';
 import client from './common/constants/apollo-client';
 import { ToastProvider } from './components/elements';
 import { Guard } from './common';
+import { Provider } from 'react-redux';
+import { store } from './store/store';
 
 function App() {
   return (
-    <ApolloProvider client={client}>
-      <ToastProvider />
-      <Guard>
-        <RouterProvider router={appRouter} />
-      </Guard>
-    </ApolloProvider>
+    <Provider store={store}>
+      <ApolloProvider client={client}>
+        <ToastProvider />
+        <Guard>
+          <RouterProvider router={appRouter} />
+        </Guard>
+      </ApolloProvider>
+    </Provider>
   );
 }
 

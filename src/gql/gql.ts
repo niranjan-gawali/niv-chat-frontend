@@ -20,6 +20,7 @@ type Documents = {
     "\n  query findChats($cursor: String) {\n    findChats(ChatInput: { cursor: $cursor }) {\n      _id\n      groupName\n      groupAdmin\n      lastMessage {\n        _id\n        content\n        createdAt\n        updatedAt\n      }\n      users {\n        _id\n        firstName\n        lastName\n        username\n        isLoggedInUser\n      }\n      isGroupChat\n    }\n  }\n": typeof types.FindChatsDocument,
     "\n  query GetMessages($chatId: ID!, $cursor: String) {\n    getMessages(getMessageInput: { chatId: $chatId, cursor: $cursor }) {\n      _id\n      content\n      createdAt\n      updatedAt\n      senderUser {\n        _id\n        firstName\n        lastName\n        email\n        username\n        createdAt\n        updatedAt\n        profilePicture\n        isLoggedInUser\n      }\n    }\n  }\n": typeof types.GetMessagesDocument,
     "\n  query GetMyInformation {\n    getMyInformation {\n      _id\n      email\n      username\n    }\n  }\n": typeof types.GetMyInformationDocument,
+    "\n  query GetUser {\n    getUser {\n      _id\n      firstName\n      lastName\n      email\n      username\n      createdAt\n      updatedAt\n      profilePicture\n      isLoggedInUser\n    }\n  }\n": typeof types.GetUserDocument,
     "\n  query FindChat($chatId: ID!) {\n    findChat(id: $chatId) {\n      _id\n      isGroupChat\n      groupName\n      groupAdmin\n      lastMessage {\n        _id\n        content\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": typeof types.FindChatDocument,
 };
 const documents: Documents = {
@@ -29,6 +30,7 @@ const documents: Documents = {
     "\n  query findChats($cursor: String) {\n    findChats(ChatInput: { cursor: $cursor }) {\n      _id\n      groupName\n      groupAdmin\n      lastMessage {\n        _id\n        content\n        createdAt\n        updatedAt\n      }\n      users {\n        _id\n        firstName\n        lastName\n        username\n        isLoggedInUser\n      }\n      isGroupChat\n    }\n  }\n": types.FindChatsDocument,
     "\n  query GetMessages($chatId: ID!, $cursor: String) {\n    getMessages(getMessageInput: { chatId: $chatId, cursor: $cursor }) {\n      _id\n      content\n      createdAt\n      updatedAt\n      senderUser {\n        _id\n        firstName\n        lastName\n        email\n        username\n        createdAt\n        updatedAt\n        profilePicture\n        isLoggedInUser\n      }\n    }\n  }\n": types.GetMessagesDocument,
     "\n  query GetMyInformation {\n    getMyInformation {\n      _id\n      email\n      username\n    }\n  }\n": types.GetMyInformationDocument,
+    "\n  query GetUser {\n    getUser {\n      _id\n      firstName\n      lastName\n      email\n      username\n      createdAt\n      updatedAt\n      profilePicture\n      isLoggedInUser\n    }\n  }\n": types.GetUserDocument,
     "\n  query FindChat($chatId: ID!) {\n    findChat(id: $chatId) {\n      _id\n      isGroupChat\n      groupName\n      groupAdmin\n      lastMessage {\n        _id\n        content\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": types.FindChatDocument,
 };
 
@@ -70,6 +72,10 @@ export function graphql(source: "\n  query GetMessages($chatId: ID!, $cursor: St
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query GetMyInformation {\n    getMyInformation {\n      _id\n      email\n      username\n    }\n  }\n"): (typeof documents)["\n  query GetMyInformation {\n    getMyInformation {\n      _id\n      email\n      username\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetUser {\n    getUser {\n      _id\n      firstName\n      lastName\n      email\n      username\n      createdAt\n      updatedAt\n      profilePicture\n      isLoggedInUser\n    }\n  }\n"): (typeof documents)["\n  query GetUser {\n    getUser {\n      _id\n      firstName\n      lastName\n      email\n      username\n      createdAt\n      updatedAt\n      profilePicture\n      isLoggedInUser\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

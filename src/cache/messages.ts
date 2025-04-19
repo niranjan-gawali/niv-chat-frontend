@@ -21,8 +21,6 @@ export const updateMessages = (
   );
 
   if (userId) {
-    console.log('USER ID IS PRESENT : ', userId);
-    console.log('NIRANJAN : ', message);
     if (message.senderUser)
       message.senderUser.isLoggedInUser =
         message.senderUser?._id.toString() === userId;
