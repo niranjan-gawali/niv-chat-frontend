@@ -5,3 +5,4 @@ export * from './useGetChats';
 export * from './useGetMessages';
 export * from './useCreateMessage';
 export * from './useCreateUser';
+export * from './socketMessageCreated';

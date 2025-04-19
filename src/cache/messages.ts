@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApolloCache } from '@apollo/client';
 import { GET_MESSAGES_QUERY } from '../hooks';
-import { CreateMessageOutput, GetMessageOutput } from '../gql/graphql';
+import { GetMessageOutput } from '../gql/graphql';
 
 export const updateMessages = (
   cache: ApolloCache<any>,
   chatId: string,
-  message: CreateMessageOutput
+  message: GetMessageOutput,
+  userId?: string
 ) => {
   const messagesQueryOptions = {
     query: GET_MESSAGES_QUERY,
@@ -19,24 +20,18 @@ export const updateMessages = (
     messagesQueryOptions
   );
 
+  if (userId) {
+    console.log('USER ID IS PRESENT : ', userId);
+    console.log('NIRANJAN : ', message);
+    if (message.senderUser)
+      message.senderUser.isLoggedInUser =
+        message.senderUser?._id.toString() === userId;
+  }
+
   if (existing && existing.getMessages) {
     const existingMessages = existing.getMessages;
 
-    const senderUser = existingMessages.find(
-      (msg) => msg.senderUser?.isLoggedInUser
-    )?.senderUser;
-
-    const newMessage = {
-      ...message,
-      senderUser: senderUser
-        ? { ...senderUser, __typename: 'UserOutput' }
-        : undefined,
-      __typename: 'GetMessageOutput',
-    };
-
-    // const updatedMessages = [...existingMessages, newMessage];
-    // const updatedMessages = [newMessage, ...existingMessages];
-    const updatedMessages = [newMessage, ...existingMessages].sort(
+    const updatedMessages = [message, ...existingMessages].sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );

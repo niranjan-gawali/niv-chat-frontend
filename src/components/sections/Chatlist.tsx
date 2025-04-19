@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
 import { Chat } from '../../common';
+import { useSocketMessageCreated } from '../../hooks';
 import { SingleChatBox } from '../elements';
 
 interface ChatListProps {
@@ -19,6 +19,11 @@ const ChatList = ({
   setSidebarOpen,
   fetchOlderChats,
 }: ChatListProps) => {
+  useSocketMessageCreated(
+    { chatIds: chats.map((c) => c._id) ?? [] },
+    selectedChat?._id ?? ''
+  );
+
   return (
     <aside
       className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 p-4 transform shadow-xl ${

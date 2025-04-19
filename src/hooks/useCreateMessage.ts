@@ -9,6 +9,17 @@ const CREATE_MESSAGE = graphql(`
       content
       createdAt
       updatedAt
+      senderUser {
+        _id
+        firstName
+        lastName
+        email
+        username
+        createdAt
+        updatedAt
+        profilePicture
+        isLoggedInUser
+      }
     }
   }
 `);
@@ -21,7 +32,7 @@ const useCreateMessage = () => {
       await createMessageMutation({
         variables: { chatId, content },
         update(cache, { data }) {
-          // console.log('1. ', data);
+          console.log('1. ', data);
 
           if (data?.createMessage) {
             updateMessages(cache, chatId, data.createMessage);
