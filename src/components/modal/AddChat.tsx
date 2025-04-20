@@ -14,7 +14,7 @@ const AddChat = ({ isOpen, onClose }: AddChatProps) => {
   const [selectedUser, setSelectedUser] = useState<User>();
   const [debouncedSearchText, setDebouncedSearchText] = useState('');
   const { users } = useSearchUsers(debouncedSearchText);
-  const { createChat, error, data, resetError } = useCreateChat();
+  const { createChat, error, resetError } = useCreateChat();
 
   useEffect(() => {
     if (isOpen) {

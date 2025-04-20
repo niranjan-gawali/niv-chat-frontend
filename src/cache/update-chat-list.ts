@@ -32,8 +32,6 @@ export const updateChatList = (
       ...(existing.findChats as unknown as ChatOutput[]),
     ];
 
-    console.log(updatedChats);
-
     cache.writeQuery({
       ...chatQueryOptions,
       data: {
