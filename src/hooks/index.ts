@@ -6,3 +6,5 @@ export * from './useGetMessages';
 export * from './useCreateMessage';
 export * from './useCreateUser';
 export * from './socketMessageCreated';
+export * from './useSearchUsers';
+export * from './useGetUser';

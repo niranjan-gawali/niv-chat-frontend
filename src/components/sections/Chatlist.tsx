@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Chat } from '../../common';
 import { useSocketMessageCreated } from '../../hooks';
 import { SingleChatBox } from '../elements';
+import AddChat from '../modal/AddChat';
 
 interface ChatListProps {
   chats: Chat[];
@@ -19,6 +21,8 @@ const ChatList = ({
   setSidebarOpen,
   fetchOlderChats,
 }: ChatListProps) => {
+  const [openMenu, setOpenMenu] = useState(false);
+
   useSocketMessageCreated(
     { chatIds: chats.map((c) => c._id) ?? [] },
     selectedChat?._id ?? ''
@@ -30,7 +34,16 @@ const ChatList = ({
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       } transition-transform md:relative md:translate-x-0 md:w-1/4 md:min-w-[250px] overflow-y-auto`}
     >
-      <h2 className='text-lg font-bold mb-4 dark:text-white'>Chats</h2>
+      <div className='flex justify-between my-2'>
+        <h2 className='text-lg font-bold mb-4 dark:text-white'>Chats</h2>
+        <span
+          className='px-2.5 py-2 rounded-full bg-amber-200 cursor-pointer text-2xl'
+          onClick={() => setOpenMenu(true)}
+        >
+          +
+        </span>
+      </div>
+      <AddChat isOpen={openMenu} onClose={() => setOpenMenu(false)} />
       <ul className='space-y-2'>
         {chats &&
           chats.map((chat) => {

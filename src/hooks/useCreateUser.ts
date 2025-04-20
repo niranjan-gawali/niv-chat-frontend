@@ -4,13 +4,7 @@ import { graphql } from '../gql';
 const CREATE_USER_MUTATION = graphql(`
   mutation CreateUser($createUserInput: CreateUserInput!) {
     createUser(createUserInput: $createUserInput) {
-      _id
-      email
-      firstName
-      lastName
-      username
-      createdAt
-      updatedAt
+      ...UserFragment
     }
   }
 `);

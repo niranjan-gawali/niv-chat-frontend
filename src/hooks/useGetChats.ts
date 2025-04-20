@@ -4,23 +4,7 @@ import { graphql } from '../gql';
 export const GET_CHATS_QUERY = graphql(`
   query findChats($cursor: String) {
     findChats(ChatInput: { cursor: $cursor }) {
-      _id
-      groupName
-      groupAdmin
-      lastMessage {
-        _id
-        content
-        createdAt
-        updatedAt
-      }
-      users {
-        _id
-        firstName
-        lastName
-        username
-        isLoggedInUser
-      }
-      isGroupChat
+      ...ChatFragment
     }
   }
 `);

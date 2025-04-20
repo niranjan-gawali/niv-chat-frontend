@@ -7,21 +7,7 @@ import { Message } from '../common';
 export const GET_MESSAGES_QUERY = graphql(`
   query GetMessages($chatId: ID!, $cursor: String) {
     getMessages(getMessageInput: { chatId: $chatId, cursor: $cursor }) {
-      _id
-      content
-      createdAt
-      updatedAt
-      senderUser {
-        _id
-        firstName
-        lastName
-        email
-        username
-        createdAt
-        updatedAt
-        profilePicture
-        isLoggedInUser
-      }
+      ...GetMessageOutputFragment
     }
   }
 `);

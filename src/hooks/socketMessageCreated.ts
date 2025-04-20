@@ -10,21 +10,7 @@ import { useGetMyInformation } from './useGetMyInformation';
 const messageCreatedDocument = graphql(`
   subscription messageCreated($chatIds: [String!]!) {
     messageCreated(chatIds: $chatIds) {
-      _id
-      content
-      createdAt
-      updatedAt
-      senderUser {
-        _id
-        firstName
-        lastName
-        email
-        username
-        createdAt
-        updatedAt
-        profilePicture
-        isLoggedInUser
-      }
+      ...GetMessageOutputFragment
     }
   }
 `);

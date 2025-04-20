@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApolloCache } from '@apollo/client';
-import { ChatOutput, GetMessageOutput } from '../gql/graphql';
+import { ChatOutput } from '../gql/graphql';
 import { GET_CHATS_QUERY } from '../hooks';
 
-export const updateChats = (
+export const updateChatList = (
   cache: ApolloCache<any>,
-  id: string,
-  message: GetMessageOutput
+  chat: ChatOutput,
+  userId: string
 ) => {
   const chatQueryOptions = {
     query: GET_CHATS_QUERY,
@@ -22,15 +22,17 @@ export const updateChats = (
   if (existing && existing.findChats) {
     if (!existing) return;
 
-    const updatedChats = existing.findChats.map((chat) => {
-      if (chat._id === id) {
-        return {
-          ...chat,
-          lastMessage: message,
-        };
-      }
-      return chat;
-    });
+    const updatedUsers = chat.users?.map((u) => ({
+      ...u,
+      isLoggedInUser: u._id === userId,
+    }));
+
+    const updatedChats = [
+      { ...chat, users: updatedUsers },
+      ...(existing.findChats as unknown as ChatOutput[]),
+    ];
+
+    console.log(updatedChats);
 
     cache.writeQuery({
       ...chatQueryOptions,

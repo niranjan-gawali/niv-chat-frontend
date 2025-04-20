@@ -5,15 +5,7 @@ import { setUserData } from '../store/slices/UserSlice';
 const GET_USER_QUERY = graphql(`
   query GetUser {
     getUser {
-      _id
-      firstName
-      lastName
-      email
-      username
-      createdAt
-      updatedAt
-      profilePicture
-      isLoggedInUser
+      ...UserFragment
     }
   }
 `);
