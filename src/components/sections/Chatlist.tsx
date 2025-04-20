@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Chat } from '../../common';
 import { useSocketMessageCreated } from '../../hooks';
 import { SingleChatBox } from '../elements';
