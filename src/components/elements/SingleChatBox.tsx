@@ -33,7 +33,7 @@ const SingleChatBox = ({
         key={chat._id}
         className={`flex items-start p-2 rounded-md cursor-pointer transition-colors ${
           selectedChat?._id === chat._id
-            ? 'bg-gray-200 text-white'
+            ? 'bg-gray-200 text-white dark:text-black'
             : 'hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white'
         }`}
         onClick={() => {

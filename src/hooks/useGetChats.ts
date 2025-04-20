@@ -1,9 +1,9 @@
-import { useQuery } from '@apollo/client';
+import { useQuery, useLazyQuery } from '@apollo/client';
 import { graphql } from '../gql';
 
 export const GET_CHATS_QUERY = graphql(`
-  query findChats($cursor: String) {
-    findChats(ChatInput: { cursor: $cursor }) {
+  query findChats($cursor: String, $searchParam: String) {
+    findChats(ChatInput: { cursor: $cursor, searchParam: $searchParam }) {
       ...ChatFragment
     }
   }
@@ -18,11 +18,14 @@ const useGetChats = (cursor: string | null = null) => {
     }
   );
 
+  const [runSearchQuery, { data: searchData }] = useLazyQuery(GET_CHATS_QUERY, {
+    fetchPolicy: 'network-only',
+  });
+
   const chats = data?.findChats ?? [];
 
   const fetchOlderChats = async () => {
     if (chats.length === 0) return;
-
     const lastChat = chats[chats.length - 1];
     const newCursor = lastChat._id;
 
@@ -35,7 +38,6 @@ const useGetChats = (cursor: string | null = null) => {
           const prevChats = previousResult.findChats;
           const newChats = fetchMoreResult.findChats;
 
-          // Avoid duplicates by _id
           const combinedChats = [
             ...prevChats,
             ...newChats.filter(
@@ -53,12 +55,21 @@ const useGetChats = (cursor: string | null = null) => {
     }
   };
 
+  // 👇 New searchChats method that triggers the lazy query
+  const searchChats = (searchParam: string, cursor: string | null = null) => {
+    runSearchQuery({
+      variables: { searchParam, cursor },
+    });
+  };
+
   return {
     chats,
     loading,
     error,
     fetchOlderChats,
     refetchChats: refetch,
+    searchChats,
+    searchResult: searchData?.findChats ?? [],
   };
 };
 

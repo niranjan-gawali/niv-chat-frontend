@@ -7,11 +7,12 @@ import ChatList from '../sections/Chatlist';
 import { MessageList } from '../sections';
 
 const MainLayout = () => {
-  const { chats, fetchOlderChats } = useGetChats();
+  const { chats, fetchOlderChats, searchChats, searchResult } = useGetChats();
 
   const [selectedChat, setSelectedChat] = useState<Chat>();
   const [otherUserName, setOtherUserName] = useState<string>('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [debouncedSearchValue, debouncedSetSearchValue] = useState('');
 
   const selectedChatId = selectedChat?._id ?? '';
   const { messages, loading, fetchOlderMessages } =
@@ -55,15 +56,23 @@ const MainLayout = () => {
     }
   };
 
+  useEffect(() => {
+    searchChats(debouncedSearchValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearchValue]);
+
   return (
     <div className='max-w-7xl w-full mx-auto flex h-full rounded-lg shadow-md overflow-hidden'>
       <ChatList
-        chats={chats as Chat[]}
+        chats={
+          debouncedSearchValue ? (searchResult as Chat[]) : (chats as Chat[])
+        }
         selectedChat={selectedChat}
         handleFetchMessages={handleFetchMessages}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         fetchOlderChats={fetchOlderChats}
+        debouncedSetSearchValue={debouncedSetSearchValue}
       />
 
       <MessageList

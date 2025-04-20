@@ -22,7 +22,7 @@ type Documents = {
     "\n  mutation CreateMessage($chatId: ID!, $content: String!) {\n    createMessage(createMessageInput: { chatId: $chatId, content: $content }) {\n      ...GetMessageOutputFragment\n    }\n  }\n": typeof types.CreateMessageDocument,
     "\n  mutation CreateUser($createUserInput: CreateUserInput!) {\n    createUser(createUserInput: $createUserInput) {\n      ...UserFragment\n    }\n  }\n": typeof types.CreateUserDocument,
     "\n  query FindChat($id: ID!) {\n    findChat(id: $id) {\n      ...ChatFragment\n    }\n  }\n": typeof types.FindChatDocument,
-    "\n  query findChats($cursor: String) {\n    findChats(ChatInput: { cursor: $cursor }) {\n      ...ChatFragment\n    }\n  }\n": typeof types.FindChatsDocument,
+    "\n  query findChats($cursor: String, $searchParam: String) {\n    findChats(ChatInput: { cursor: $cursor, searchParam: $searchParam }) {\n      ...ChatFragment\n    }\n  }\n": typeof types.FindChatsDocument,
     "\n  query GetMessages($chatId: ID!, $cursor: String) {\n    getMessages(getMessageInput: { chatId: $chatId, cursor: $cursor }) {\n      ...GetMessageOutputFragment\n    }\n  }\n": typeof types.GetMessagesDocument,
     "\n  query GetMyInformation {\n    getMyInformation {\n      _id\n      email\n      username\n    }\n  }\n": typeof types.GetMyInformationDocument,
     "\n  query GetUser {\n    getUser {\n      ...UserFragment\n    }\n  }\n": typeof types.GetUserDocument,
@@ -37,7 +37,7 @@ const documents: Documents = {
     "\n  mutation CreateMessage($chatId: ID!, $content: String!) {\n    createMessage(createMessageInput: { chatId: $chatId, content: $content }) {\n      ...GetMessageOutputFragment\n    }\n  }\n": types.CreateMessageDocument,
     "\n  mutation CreateUser($createUserInput: CreateUserInput!) {\n    createUser(createUserInput: $createUserInput) {\n      ...UserFragment\n    }\n  }\n": types.CreateUserDocument,
     "\n  query FindChat($id: ID!) {\n    findChat(id: $id) {\n      ...ChatFragment\n    }\n  }\n": types.FindChatDocument,
-    "\n  query findChats($cursor: String) {\n    findChats(ChatInput: { cursor: $cursor }) {\n      ...ChatFragment\n    }\n  }\n": types.FindChatsDocument,
+    "\n  query findChats($cursor: String, $searchParam: String) {\n    findChats(ChatInput: { cursor: $cursor, searchParam: $searchParam }) {\n      ...ChatFragment\n    }\n  }\n": types.FindChatsDocument,
     "\n  query GetMessages($chatId: ID!, $cursor: String) {\n    getMessages(getMessageInput: { chatId: $chatId, cursor: $cursor }) {\n      ...GetMessageOutputFragment\n    }\n  }\n": types.GetMessagesDocument,
     "\n  query GetMyInformation {\n    getMyInformation {\n      _id\n      email\n      username\n    }\n  }\n": types.GetMyInformationDocument,
     "\n  query GetUser {\n    getUser {\n      ...UserFragment\n    }\n  }\n": types.GetUserDocument,
@@ -93,7 +93,7 @@ export function graphql(source: "\n  query FindChat($id: ID!) {\n    findChat(id
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query findChats($cursor: String) {\n    findChats(ChatInput: { cursor: $cursor }) {\n      ...ChatFragment\n    }\n  }\n"): (typeof documents)["\n  query findChats($cursor: String) {\n    findChats(ChatInput: { cursor: $cursor }) {\n      ...ChatFragment\n    }\n  }\n"];
+export function graphql(source: "\n  query findChats($cursor: String, $searchParam: String) {\n    findChats(ChatInput: { cursor: $cursor, searchParam: $searchParam }) {\n      ...ChatFragment\n    }\n  }\n"): (typeof documents)["\n  query findChats($cursor: String, $searchParam: String) {\n    findChats(ChatInput: { cursor: $cursor, searchParam: $searchParam }) {\n      ...ChatFragment\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
