@@ -15,7 +15,6 @@ const messageCreatedDocument = graphql(`
   }
 `);
 
-// ✅ Custom React Hook — to be called inside a React component
 export const useSocketMessageCreated = (
   variables: SubscriptionMessageCreatedArgs,
   chatId: string

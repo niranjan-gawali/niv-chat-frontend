@@ -20,14 +20,12 @@ const MainLayout = () => {
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  // Scroll to bottom when messages change
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
-  // Automatically select the first chat
   useEffect(() => {
     if (chats && chats.length > 0 && !selectedChat) {
       const firstChat = chats[0];

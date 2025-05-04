@@ -12,7 +12,7 @@ const Header = () => {
 
   const { logout } = useLogout();
 
-  // Toggle Dark Mode
+  // Dark Mode
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
@@ -25,7 +25,6 @@ const Header = () => {
     }
   };
 
-  // Apply dark mode on mount if previously enabled
   useEffect(() => {
     if (darkMode) document.documentElement.classList.add('dark');
   }, [darkMode]);
@@ -38,10 +37,8 @@ const Header = () => {
   return (
     <header className='sticky top-0 w-full bg-white dark:bg-gray-900 shadow-md z-50'>
       <div className='max-w-7xl mx-auto px-6 py-4 flex justify-between items-center'>
-        {/* Logo */}
         <h1 className='text-xl font-bold dark:text-white'>NivChat</h1>
 
-        {/* Desktop Navigation */}
         <nav className='hidden md:flex space-x-6'>
           <ul className='flex space-x-6 text-gray-700 dark:text-gray-300'>
             <li className='hover:text-blue-500 dark:hover:text-blue-400 cursor-pointer'>
@@ -59,7 +56,6 @@ const Header = () => {
           </ul>
         </nav>
 
-        {/* Theme Toggle Button */}
         <button
           className='p-2 text-gray-700 dark:text-gray-300 cursor-pointer'
           onClick={toggleDarkMode}
@@ -67,7 +63,6 @@ const Header = () => {
           {darkMode ? <Sun size={24} /> : <Moon size={24} />}
         </button>
 
-        {/* Mobile Menu Button */}
         <button
           className='md:hidden p-2'
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -76,7 +71,6 @@ const Header = () => {
         </button>
       </div>
 
-      {/* Mobile Navigation Menu */}
       {isMenuOpen && (
         <nav className='md:hidden bg-white dark:bg-gray-900 shadow-md absolute w-full left-0 top-[60px]'>
           <ul className='flex flex-col text-center space-y-4 p-4 text-gray-700 dark:text-gray-300'>

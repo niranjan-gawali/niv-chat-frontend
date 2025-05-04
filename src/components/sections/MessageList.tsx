@@ -30,7 +30,6 @@ const MessageList = ({
   const [initialScrollDone, setInitialScrollDone] = useState(false);
   const [prevHeight, setPrevHeight] = useState<number | null>(null);
 
-  // Scroll to bottom on initial load
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({
@@ -40,7 +39,6 @@ const MessageList = ({
     setInitialScrollDone(true);
   }, [messages]);
 
-  // Maintain scroll position when older messages are loaded
   useEffect(() => {
     // console.log('MESSAGE IS UPDATED...', [...messages]);
 
@@ -85,7 +83,6 @@ const MessageList = ({
         </h2>
       </div>
 
-      {/* Chat Messages */}
       <div
         ref={containerRef}
         onScroll={handleScroll}
@@ -128,7 +125,6 @@ const MessageList = ({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Field */}
       <div className='p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800'>
         <InputMessageBox selectedChat={selectedChat} />
       </div>
