@@ -7,7 +7,7 @@ import { useLogin } from '../hooks';
 import { toast } from 'react-toastify';
 
 const Login = () => {
-  const { login, error, setError } = useLogin();
+  const { login, setError } = useLogin();
   const navigate = useNavigate();
 
   const initialUserForm = new LoginDto();
@@ -37,79 +37,73 @@ const Login = () => {
     }
   };
 
-  if (error) {
-    <h1>Error Occured !!!!</h1>;
-  }
-
   return (
-    <>
+    <div className='min-h-screen flex items-center justify-center bg-cover bg-center relative login-bg'>
+      <div className='absolute inset-0 bg-black opacity-60'></div>
+
       <Formik
         initialValues={initialUserForm}
         validationSchema={userFormValidation}
         onSubmit={handleForm}
       >
         {({ isSubmitting }) => (
-          <Form className='max-w-md mx-auto mt-30 border rounded-2xl p-16'>
-            <div className='relative z-0 w-full mb-5 group'>
+          <Form className='z-10 bg-white/10 backdrop-blur-md p-10 rounded-2xl shadow-lg max-w-md w-full dark:bg-gray-800/30'>
+            <h2 className='text-3xl font-semibold text-center text-white mb-6'>
+              Login
+            </h2>
+
+            <div className='mb-5'>
+              <label htmlFor='username' className='block text-white mb-1'>
+                Username
+              </label>
               <Field
                 type='text'
                 name='username'
                 id='username'
-                className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
-                placeholder=''
-                required
+                className='w-full px-4 py-2 rounded-md bg-white/20 text-white focus:outline-none focus:ring-2 focus:ring-blue-400'
               />
-              <label
-                htmlFor='username'
-                className='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
-              >
-                Username
-              </label>
               <ErrorMessage
                 name='username'
                 component='div'
-                className='text-red-500 text-sm'
+                className='text-red-400 text-sm mt-1'
               />
             </div>
 
-            <div className='relative z-0 w-full mb-5 group'>
+            <div className='mb-5'>
+              <label htmlFor='password' className='block text-white mb-1'>
+                Password
+              </label>
               <Field
                 type='password'
                 name='password'
                 id='password'
-                className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
-                placeholder=' '
-                required
+                className='w-full px-4 py-2 rounded-md bg-white/20 text-white focus:outline-none focus:ring-2 focus:ring-blue-400'
               />
-              <label
-                htmlFor='password'
-                className='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
-              >
-                Password
-              </label>
               <ErrorMessage
                 name='password'
                 component='div'
-                className='text-red-500 text-sm'
+                className='text-red-400 text-sm mt-1'
               />
             </div>
 
             <button
               type='submit'
               disabled={isSubmitting}
-              className='bg-blue-500 text-white px-4 py-2 rounded-md w-full cursor-pointer'
+              className='w-full py-2 mt-4 bg-blue-500 hover:bg-blue-600 transition-colors text-white font-semibold rounded-md'
             >
-              {isSubmitting ? 'Submitting...' : 'Submit'}
+              {isSubmitting ? 'Logging in...' : 'Login'}
             </button>
-            <div className='w-full flex justify-center mt-10 underline cursor-pointer'>
-              <Link to='/signup' className=''>
-                Signup
+
+            <div className='mt-6 text-center text-white'>
+              Don't have an account?{' '}
+              <Link to='/signup' className='underline hover:text-blue-300'>
+                Sign up
               </Link>
             </div>
           </Form>
         )}
       </Formik>
-    </>
+    </div>
   );
 };
 

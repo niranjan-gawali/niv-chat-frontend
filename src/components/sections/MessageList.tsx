@@ -66,16 +66,17 @@ const MessageList = ({
   }, [messages, loading, selectedChat, fetchOlderMessages]);
 
   return (
-    <section className='flex-1 flex flex-col h-full bg-white dark:bg-gray-800 shadow-lg'>
+    <section className='flex-1 flex flex-col h-full bg-white dark:bg-gray-900 shadow-inner rounded-lg'>
       {/* Header */}
-      <div className='p-3 flex justify-between items-center border-b dark:border-gray-700'>
+      <div className='p-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800'>
         <button
-          className='md:hidden text-gray-700 dark:text-white'
           onClick={() => setSidebarOpen(!sidebarOpen)}
+          className='md:hidden text-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-400 p-2 rounded'
+          aria-label='Toggle Sidebar'
         >
           <Menu size={24} />
         </button>
-        <h2 className='text-lg font-semibold dark:text-white'>
+        <h2 className='text-base sm:text-lg font-semibold text-gray-800 dark:text-white truncate max-w-xs'>
           {selectedChat
             ? selectedChat.isGroupChat
               ? `Group: ${selectedChat.groupName}`
@@ -84,11 +85,11 @@ const MessageList = ({
         </h2>
       </div>
 
-      {/* Messages */}
+      {/* Chat Messages */}
       <div
         ref={containerRef}
         onScroll={handleScroll}
-        className='flex-1 overflow-y-auto p-4 space-y-2'
+        className='flex-1 overflow-y-auto px-4 py-3 space-y-3 scroll-smooth'
       >
         {messages?.length > 0 ? (
           [...messages]
@@ -99,12 +100,15 @@ const MessageList = ({
               return (
                 <div
                   key={msg._id}
-                  className={`flex items-end space-x-2 ${
+                  className={`flex items-end ${
                     isLoggedIn ? 'justify-end' : 'justify-start'
                   }`}
                 >
+                  {/* Show profile icon if group chat and not logged in */}
                   {!isLoggedIn && isGroupChat && (
-                    <ProfileBox user={msg.senderUser} />
+                    <div className='mr-2'>
+                      <ProfileBox user={msg.senderUser} />
+                    </div>
                   )}
 
                   <MessageField
@@ -117,7 +121,7 @@ const MessageList = ({
             })
             .reverse()
         ) : (
-          <p className='text-gray-500 dark:text-gray-400 text-center'>
+          <p className='text-gray-500 dark:text-gray-400 text-center mt-6'>
             No messages yet.
           </p>
         )}
@@ -125,7 +129,9 @@ const MessageList = ({
       </div>
 
       {/* Input Field */}
-      <InputMessageBox selectedChat={selectedChat} />
+      <div className='p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800'>
+        <InputMessageBox selectedChat={selectedChat} />
+      </div>
     </section>
   );
 };

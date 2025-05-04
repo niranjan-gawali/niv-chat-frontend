@@ -1,3 +1,9 @@
 @import 'tailwindcss';
 /* @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *)); */
 @custom-variant dark (&:where(.dark, .dark *));
+
+.login-bg {
+  background-image: url('https://images.unsplash.com/photo-1510906594845-bc082582c8cc?q=80&w=2644&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* Replace if needed */
+  background-size: cover;
+  background-position: center;
+}

@@ -43,36 +43,39 @@ const ChatList = ({
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 p-4 transform shadow-xl ${
+      className={`fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-gray-900 p-5 transform shadow-2xl ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } transition-transform md:relative md:translate-x-0 md:w-1/4 md:min-w-[250px] overflow-y-auto`}
+      } transition-transform md:relative md:translate-x-0 md:w-1/4 md:min-w-[260px] overflow-y-auto`}
     >
-      <div className='flex items-center justify-between mb-4'>
-        <h2 className='text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white'>
+      {/* Header */}
+      <div className='flex items-center justify-between mb-6'>
+        <h2 className='text-2xl font-bold text-gray-800 dark:text-white'>
           Chats
         </h2>
         <button
           onClick={() => setOpenMenu(true)}
-          className='flex items-center justify-center w-10 h-10 rounded-full bg-amber-400 text-white text-3xl shadow hover:bg-amber-500 transition duration-200 cursor-pointer dark:text-black'
+          className='w-10 h-10 rounded-full bg-amber-500 text-white text-xl font-bold hover:bg-amber-600 shadow-md transition-all'
           aria-label='Add Chat'
         >
           +
         </button>
       </div>
 
+      {/* Search */}
       <div className='mb-6'>
         <input
           type='text'
           placeholder='Search chats...'
           value={searchValue}
           onChange={handleSearchChange}
-          className='w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400 transition'
+          className='w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all'
         />
       </div>
 
       <AddChat isOpen={openMenu} onClose={() => setOpenMenu(false)} />
 
-      <ul className='space-y-2'>
+      {/* Chat List */}
+      <ul className='space-y-3'>
         {chats.length > 0 ? (
           chats.map((chat) => (
             <SingleChatBox
@@ -84,19 +87,20 @@ const ChatList = ({
             />
           ))
         ) : (
-          <p className='text-sm text-gray-500 dark:text-gray-400 text-center mt-4'>
+          <p className='text-center text-gray-500 dark:text-gray-400 text-sm'>
             No chats found.
           </p>
         )}
       </ul>
 
-      <div className='flex justify-center mt-6 px-4'>
+      {/* Load More */}
+      <div className='flex justify-center mt-8'>
         <button
-          className='flex items-center justify-center gap-2 rounded-xl border border-green-500 bg-green-50 px-6 py-2 text-green-700 font-medium transition hover:bg-green-100 hover:shadow-sm active:scale-95 w-full md:w-auto cursor-pointer'
+          className='flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2 rounded-lg transition-all shadow-md'
           onClick={fetchOlderChats}
         >
           <svg
-            className='h-5 w-5'
+            className='w-5 h-5'
             fill='none'
             stroke='currentColor'
             viewBox='0 0 24 24'
@@ -108,7 +112,7 @@ const ChatList = ({
               d='M19 9l-7 7-7-7'
             />
           </svg>
-          <span className='text-sm md:text-base'>Load More</span>
+          <span>Load More</span>
         </button>
       </div>
     </aside>
